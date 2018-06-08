@@ -1,0 +1,27 @@
+hash: 4329437875ad18c5a023c528ce835e70bcca9baa11ef38fd8e4def8caa03ddd2
+updated: 2018-06-05T16:07:30.199537+08:00
+imports:
+- name: github.com/golang/protobuf
+  version: b4deda0973fb4c70b50d226b1af49f3da59f5265
+  subpackages:
+  - proto
+- name: github.com/satori/go.uuid
+  version: f58768cc1a7a7e77a3bd49e98cdd21419399b6a3
+- name: github.com/spacemonkeygo/openssl
+  version: 85c7f475b6f75ff4afea3bb003f8b5ca711f8945
+  subpackages:
+  - utils
+- name: github.com/spacemonkeygo/spacelog
+  version: 2296661a0572a51438413369004fa931c2641923
+- name: golang.org/x/crypto
+  version: df8d4716b3472e4a531c33cedbe537dae921a1a9
+  subpackages:
+  - pbkdf2
+  - ripemd160
+  - scrypt
+  - sha3
+- name: golang.org/x/sys
+  version: bf42f188b9bc6f2cf5b8ee5a912ef1aedd0eba4c
+  subpackages:
+  - unix
+testImports: []
