@@ -4,6 +4,8 @@ import (
 	"testing"
 	"github.com/vigozhang/neb-go/utils/httprequest"
 	"github.com/vigozhang/neb-go/utils"
+	"github.com/vigozhang/neb-go/core/transaction"
+	"github.com/vigozhang/neb-go/core/account"
 )
 
 var requesttest = httprequest.NewHttpRequest(httprequest.TestNet, httprequest.APIVersion1)
@@ -69,7 +71,39 @@ func TestApi_Call(t *testing.T) {
 }
 
 func TestApi_SendRawTransaction(t *testing.T) {
-	// TODO:
+	acc := loadAccount()
+
+	contract := transaction.Contract{
+		Function: "getCreatedList",
+		Args:     string(utils.EncodeToJsonBytes([]string{"n1UHqTFvng8vXbcoWxYECwc4shXKnrcXwdz"})),
+	}
+
+	txOpts := transaction.TransactionOptions{
+		ChainID:  1001,
+		From:     acc,
+		To:       "n1f5rgBtVKVEjxPBwrDcaV8H8QqxniFyhPk",
+		Value:    0,
+		Nonce:    6,
+		GasPrice: 1000000,
+		GasLimit: 2000000,
+		Contract: &contract,
+	}
+
+	tx := transaction.NewTransaction(txOpts)
+	tx.SignTransaction()
+	raw, _ := tx.ToProtoString()
+
+	req := SendRawTransactionRequest{
+		Data: raw,
+	}
+
+	resp, err := api.SendRawTransaction(req)
+	if err != nil {
+		t.Error("TestApi_SendRawTransaction failed")
+	} else {
+		t.Log("TestApi_SendRawTransaction Resp:", string(utils.EncodeToJsonBytes(resp)))
+	}
+
 }
 
 func TestApi_GetBlockByHash(t *testing.T) {
@@ -171,4 +205,12 @@ func TestApi_GetDynasty(t *testing.T) {
 		t.Log("TestApi_GetDynasty Resp:", string(utils.EncodeToJsonBytes(resp)))
 	}
 
+}
+
+func loadAccount() *account.Account {
+	acc := account.NewAccount()
+	// keyjson
+	keyjson := ""
+	loadAcc, _ := acc.FromKey(keyjson, "passphrase", true)
+	return loadAcc
 }

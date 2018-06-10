@@ -88,7 +88,7 @@ func (api *Api) SendRawTransaction(req SendRawTransactionRequest) (*SendTransact
 	mapResult["result"] = new(SendTransactionResponse)
 	err = json.Unmarshal(resp, &mapResult)
 	if err != nil {
-		log.Println("SendRawTransaction error:", err)
+		log.Printf("SendRawTransaction error:%s, response is %s", err, string(resp))
 		return nil, err
 	}
 	return mapResult["result"], nil
