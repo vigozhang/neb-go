@@ -2,8 +2,6 @@ package rpc
 
 import (
 	"encoding/json"
-	"log"
-
 	"github.com/vigozhang/neb-go/utils/httprequest"
 )
 
@@ -22,164 +20,175 @@ func (admin *Admin) SetRequest(request *httprequest.HttpRequest) {
 func (admin *Admin) NodeInfo() (*NodeInfoResponse, error) {
 	resp, err := admin.HttpRequest.Get("/admin/nodeinfo", nil)
 	if err != nil {
+		logError("NodeInfo", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*NodeInfoResponse)
-	mapResult["result"] = new(NodeInfoResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response NodeInfoResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("nodeinfo error:", err)
+		logError("NodeInfo", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (admin *Admin) Accounts() (*AccountsResponse, error) {
 	resp, err := admin.HttpRequest.Get("/admin/accounts", nil)
 	if err != nil {
+		logError("Accounts", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*AccountsResponse)
-	mapResult["result"] = new(AccountsResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response AccountsResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("Accounts error:", err)
+		logError("Accounts", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (admin *Admin) NewAccount(req NewAccountRequest) (*NewAccountResponse, error) {
 	resp, err := admin.HttpRequest.Post("/admin/account/new", req)
 	if err != nil {
+		logError("NewAccount", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*NewAccountResponse)
-	mapResult["result"] = new(NewAccountResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response NewAccountResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("NewAccount error:", err)
+		logError("NewAccount", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (admin *Admin) UnlockAccount(req UnlockAccountRequest) (*UnlockAccountResponse, error) {
 	resp, err := admin.HttpRequest.Post("/admin/account/unlock", req)
 	if err != nil {
+		logError("UnlockAccount", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*UnlockAccountResponse)
-	mapResult["result"] = new(UnlockAccountResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response UnlockAccountResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("UnlockAccount error:", err)
+		logError("UnlockAccount", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (admin *Admin) LockAccount(req LockAccountRequest) (*LockAccountResponse, error) {
 	resp, err := admin.HttpRequest.Post("/admin/account/lock", req)
 	if err != nil {
+		logError("LockAccount", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*LockAccountResponse)
-	mapResult["result"] = new(LockAccountResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response LockAccountResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("LockAccount error:", err)
+		logError("LockAccount", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (admin *Admin) SendTransaction(req TransactionRequest) (*SendTransactionResponse, error) {
 	resp, err := admin.HttpRequest.Post("/admin/transaction", req)
 	if err != nil {
+		logError("SendTransaction", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*SendTransactionResponse)
-	mapResult["result"] = new(SendTransactionResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response SendTransactionResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Printf("SendTransaction error:%s,response is %s", err, string(resp))
+		logError("SendTransaction", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (admin *Admin) SignHash(req SignHashRequest) (*SignHashResponse, error) {
 	resp, err := admin.HttpRequest.Post("/admin/sign/hash", req)
 	if err != nil {
+		logError("SignHash", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*SignHashResponse)
-	mapResult["result"] = new(SignHashResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response SignHashResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Printf("SignHash error:%s, response is %s", err, string(resp))
+		logError("SignHash", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (admin *Admin) SignTransactionWithPassphrase(req SignTransactionPassphraseRequest) (*SignTransactionPassphraseResponse, error) {
 	resp, err := admin.HttpRequest.Post("/admin/sign", req)
 	if err != nil {
+		logError("SignTransactionWithPassphrase", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*SignTransactionPassphraseResponse)
-	mapResult["result"] = new(SignTransactionPassphraseResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response SignTransactionPassphraseResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("SignTransactionWithPassphrase error:", err)
+		logError("SignTransactionWithPassphrase", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], err
+	return &response, nil
 }
 
 func (admin *Admin) SendTransactionWithPassphrase(req SendTransactionPassphraseRequest) (*SendTransactionResponse, error) {
 	resp, err := admin.HttpRequest.Post("/admin/transactionWithPassphrase", req)
 	if err != nil {
+		logError("SendTransactionWithPassphrase", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*SendTransactionResponse)
-	mapResult["result"] = new(SendTransactionResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response SendTransactionResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("SendTransactionWithPassphrase error:", err)
+		logError("SendTransactionWithPassphrase", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (admin *Admin) StartPprof(req PprofRequest) (*PprofResponse, error) {
 	resp, err := admin.HttpRequest.Post("/admin/pprof", req)
 	if err != nil {
+		logError("StartPprof", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*PprofResponse)
-	mapResult["result"] = new(PprofResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response PprofResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("StartPprof error:", err)
+		logError("StartPprof", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (admin *Admin) GetConfig() (*GetConfigResponse, error) {
 	resp, err := admin.HttpRequest.Get("/admin/getConfig", nil)
 	if err != nil {
+		logError("GetConfig", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*GetConfigResponse)
-	mapResult["result"] = new(GetConfigResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response GetConfigResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("GetConfig error:", err)
+		logError("GetConfig", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }

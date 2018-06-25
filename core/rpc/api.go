@@ -22,195 +22,211 @@ func (api *Api) SetRequest(request *httprequest.HttpRequest) {
 func (api *Api) GetNebState() (*GetNebStateResponse, error) {
 	resp, err := api.HttpRequest.Get("/user/nebstate", nil)
 	if err != nil {
+		logError("GetNebState", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*GetNebStateResponse)
-	mapResult["result"] = new(GetNebStateResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response GetNebStateResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("GetNebState error:", err)
+		logError("GetNebState", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) LatestIrreversibleBlock() (*BlockResponse, error) {
 	resp, err := api.HttpRequest.Get("/user/lib", nil)
 	if err != nil {
+		logError("LatestIrreversibleBlock", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*BlockResponse)
-	mapResult["result"] = new(BlockResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response BlockResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("GetNebState error:", err)
+		logError("LatestIrreversibleBlock", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) GetAccountState(req GetAccountStateRequest) (*GetAccountStateResponse, error) {
 	resp, err := api.HttpRequest.Post("/user/accountstate", req)
 	if err != nil {
+		logError("GetAccountState", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*GetAccountStateResponse)
-	mapResult["result"] = new(GetAccountStateResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response GetAccountStateResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("GetAccountState error:", err)
+		logError("GetAccountState", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) Call(req TransactionRequest) (*CallResponse, error) {
 	resp, err := api.HttpRequest.Post("/user/call", req)
 	if err != nil {
+		logError("Call", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*CallResponse)
-	mapResult["result"] = new(CallResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response CallResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("Call error:", err)
+		logError("Call", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) SendRawTransaction(req SendRawTransactionRequest) (*SendTransactionResponse, error) {
 	resp, err := api.HttpRequest.Post("/user/rawtransaction", req)
 	if err != nil {
+		logError("SendRawTransaction", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*SendTransactionResponse)
-	mapResult["result"] = new(SendTransactionResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response SendTransactionResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Printf("SendRawTransaction error:%s, response is %s", err, string(resp))
+		logError("SendRawTransaction", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) GetBlockByHash(req GetBlockByHashRequest) (*BlockResponse, error) {
 	resp, err := api.HttpRequest.Post("/user/getBlockByHash", req)
 	if err != nil {
+		logError("GetBlockByHash", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*BlockResponse)
-	mapResult["result"] = new(BlockResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response BlockResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("GetBlockByHashRequest error:", err)
+		logError("GetBlockByHash", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) GetBlockByHeight(req GetBlockByHeightRequest) (*BlockResponse, error) {
 	resp, err := api.HttpRequest.Post("/user/getBlockByHeight", req)
 	if err != nil {
+		logError("GetBlockByHeight", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*BlockResponse)
-	mapResult["result"] = new(BlockResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response BlockResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("GetBlockByHashRequest error:", err)
+		logError("GetBlockByHeight", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) GetTransactionByContract(req GetTransactionByContractRequest) (*TransactionResponse, error) {
 	resp, err := api.HttpRequest.Post("/user/getTransactionByContract", req)
 	if err != nil {
+		logError("GetTransactionByContract", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*TransactionResponse)
-	mapResult["result"] = new(TransactionResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response TransactionResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("GetTransactionByContract error:", err)
+		logError("GetTransactionByContract", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) Subscribe(req SubscribeRequest) (*SubscribeResponse, error) {
-	// TODO: has problem
 	resp, err := api.HttpRequest.Post("/user/subscribe", req)
 	if err != nil {
+		logError("Subscribe", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*SubscribeResponse)
-	mapResult["result"] = new(SubscribeResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response SubscribeResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Printf("Subscribe error:%s, response is %s", err, string(resp))
+		logError("Subscribe", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) GasPrice() (*GasPriceResponse, error) {
 	resp, err := api.HttpRequest.Get("/user/getGasPrice", nil)
 	if err != nil {
+		logError("GasPrice", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*GasPriceResponse)
-	mapResult["result"] = new(GasPriceResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response GasPriceResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("GasPrice error:", err)
+		logError("GasPrice", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) EstimateGas(req TransactionRequest) (*GasResponse, error) {
 	resp, err := api.HttpRequest.Post("/user/estimateGas", req)
 	if err != nil {
+		logError("EstimateGas", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*GasResponse)
-	mapResult["result"] = new(GasResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response GasResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("EstimateGas error:", err)
+		logError("EstimateGas", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) GetEventsByHash(req HashRequest) (*EventsResponse, error) {
 	resp, err := api.HttpRequest.Post("/user/getEventsByHash", req)
 	if err != nil {
+		logError("GetEventsByHash", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*EventsResponse)
-	mapResult["result"] = new(EventsResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response EventsResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("GetEventsByHash error:", err)
+		logError("GetEventsByHash", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
 }
 
 func (api *Api) GetDynasty(req ByBlockHeightRequest) (*GetDynastyResponse, error) {
 	resp, err := api.HttpRequest.Post("/user/dynasty", req)
 	if err != nil {
+		logError("GetDynasty", string(resp), err)
 		return nil, err
 	}
-	mapResult := make(map[string]*GetDynastyResponse)
-	mapResult["result"] = new(GetDynastyResponse)
-	err = json.Unmarshal(resp, &mapResult)
+
+	var response GetDynastyResponse
+	err = json.Unmarshal(resp, &response)
 	if err != nil {
-		log.Println("GetDynasty error:", err)
+		logError("GetDynasty", string(resp), err)
 		return nil, err
 	}
-	return mapResult["result"], nil
+	return &response, nil
+}
+
+func logError(method string, resp string, err error) {
+	log.Printf("%s error:%s, response is %s", method, err, resp)
 }

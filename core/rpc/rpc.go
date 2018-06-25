@@ -1,6 +1,6 @@
 package rpc
 
-type GetNebStateResponse struct {
+type GetNebStateResult struct {
 	// Block chain id
 	ChainId uint32 `json:"chain_id,omitempty"`
 	// Current neb tail hash
@@ -17,12 +17,17 @@ type GetNebStateResponse struct {
 	Version string `json:"version,omitempty"`
 }
 
+type GetNebStateResponse struct {
+	Result *GetNebStateResult `json:"result"`
+	Error  string             `json:"error"`
+}
+
 type GetAccountStateRequest struct {
 	Address string `json:"address,omitempty"`
 	Height  uint64 `json:"height,omitempty"`
 }
 
-type GetAccountStateResponse struct {
+type GetAccountStateResult struct {
 	// Current balance in unit of 1/(10^18) nas.
 	Balance string `json:"balance,omitempty"`
 	// Current transaction count.
@@ -31,13 +36,23 @@ type GetAccountStateResponse struct {
 	Type uint32 `json:"type,omitempty"`
 }
 
-type CallResponse struct {
+type GetAccountStateResponse struct {
+	Result *GetAccountStateResult `json:"result"`
+	Error  string                 `json:"error"`
+}
+
+type CallResult struct {
 	// result of smart contract method call.
 	Result string `json:"result,omitempty"`
 	// execute error
 	ExecuteErr string `json:"execute_err,omitempty"`
 	// estimate gas used
 	EstimateGas string `json:"estimate_gas,omitempty"`
+}
+
+type CallResponse struct {
+	Result *CallResult `json:"result"`
+	Error  string      `json:"error"`
 }
 
 type SendRawTransactionRequest struct {
@@ -58,7 +73,7 @@ type GetBlockByHeightRequest struct {
 	FullFillTransaction bool `json:"full_fill_transaction,omitempty"`
 }
 
-type BlockResponse struct {
+type BlockResult struct {
 	// Hex string of block hash.
 	Hash string `json:"hash,omitempty"`
 	// Hex string of block parent hash.
@@ -86,7 +101,12 @@ type BlockResponse struct {
 	// is finaliy
 	IsFinality bool `json:"is_finality,omitempty"`
 	// transaction slice
-	Transactions []*TransactionResponse `json:"transactions,omitempty"`
+	Transactions []*TransactionResult `json:"transactions,omitempty"`
+}
+
+type BlockResponse struct {
+	Result *BlockResult `json:"result"`
+	Error  string       `json:"error"`
 }
 
 type ConsensusRoot struct {
@@ -95,7 +115,7 @@ type ConsensusRoot struct {
 	DynastyRoot []byte `json:"dynasty_root,omitempty"`
 }
 
-type TransactionResponse struct {
+type TransactionResult struct {
 	// Hex string of tx hash.
 	Hash    string `json:"hash,omitempty"`
 	ChainId uint32 `json:"chainId,omitempty"`
@@ -122,8 +142,9 @@ type TransactionResponse struct {
 	ExecuteResult string `json:"execute_result,omitempty"`
 }
 
-type GetTransactionReceiptReq struct {
-	Hash string `json:"hash"`
+type TransactionResponse struct {
+	Result *TransactionResult `json:"result"`
+	Error  string             `json:"error"`
 }
 
 type GetTransactionByContractRequest struct {
@@ -135,18 +156,33 @@ type SubscribeRequest struct {
 	Topics []string `protobuf:"bytes,1,rep,name=topics" json:"topics,omitempty"`
 }
 
-type SubscribeResponse struct {
+type SubscribeResult struct {
 	Topic string `json:"topic,omitempty"`
 	Data  string `json:"data,omitempty"`
 }
 
-type GasPriceResponse struct {
+type SubscribeResponse struct {
+	Result *SubscribeResult `json:"result"`
+	Error  string           `json:"error"`
+}
+
+type GasPriceResult struct {
 	GasPrice string `json:"gas_price,omitempty"`
 }
 
-type GasResponse struct {
+type GasPriceResponse struct {
+	Result *GasPriceResult `json:"result"`
+	Error  string          `json:"error"`
+}
+
+type GasResult struct {
 	Gas string `json:"gas,omitempty"`
 	Err string `json:"err,omitempty"`
+}
+
+type GasResponse struct {
+	Result *GasResult `json:"result"`
+	Error  string     `json:"error"`
 }
 
 type HashRequest struct {
@@ -154,8 +190,13 @@ type HashRequest struct {
 	Hash string `json:"hash,omitempty"`
 }
 
-type EventsResponse struct {
+type EventsResult struct {
 	Events []*Event `json:"events,omitempty"`
+}
+
+type EventsResponse struct {
+	Result *EventsResult `json:"result"`
+	Error  string        `json:"error"`
 }
 
 type Event struct {
@@ -167,12 +208,17 @@ type ByBlockHeightRequest struct {
 	Height uint64 `json:"height,omitempty"`
 }
 
-type GetDynastyResponse struct {
+type GetDynastyResult struct {
 	Miners []string `json:"miners,omitempty"`
 }
 
+type GetDynastyResponse struct {
+	Result *GetDynastyResult `json:"result"`
+	Error  string            `json:"error"`
+}
+
 // Response message of node info.
-type NodeInfoResponse struct {
+type NodeInfoResult struct {
 	// the node ID.
 	Id string `json:"id,omitempty"`
 	// the block chainID.
@@ -190,9 +236,19 @@ type NodeInfoResponse struct {
 	RouteTable      []*RouteTable `json:"route_table,omitempty"`
 }
 
-type AccountsResponse struct {
+type NodeInfoResponse struct {
+	Result *NodeInfoResult `json:"result"`
+	Error  string          `json:"error"`
+}
+
+type AccountsResult struct {
 	// Account list
 	Addresses []string `json:"addresses,omitempty"`
+}
+
+type AccountsResponse struct {
+	Result *AccountsResult `json:"result"`
+	Error  string          `json:"error"`
 }
 
 type RouteTable struct {
@@ -204,8 +260,13 @@ type NewAccountRequest struct {
 	Passphrase string `json:"passphrase"`
 }
 
-type NewAccountResponse struct {
+type NewAccountResult struct {
 	Address string `json:"address,omitempty"`
+}
+
+type NewAccountResponse struct {
+	Result *NewAccountResult `json:"result"`
+	Error  string            `json:"error"`
 }
 
 type UnlockAccountRequest struct {
@@ -214,16 +275,26 @@ type UnlockAccountRequest struct {
 	Duration   uint64 `json:"duration"`
 }
 
-type UnlockAccountResponse struct {
+type UnlockAccountResult struct {
 	Result bool `json:"result,omitempty"`
+}
+
+type UnlockAccountResponse struct {
+	Result *UnlockAccountResult `json:"result"`
+	Error  string               `json:"error"`
 }
 
 type LockAccountRequest struct {
 	Address string `json:"address"`
 }
 
-type LockAccountResponse struct {
+type LockAccountResult struct {
 	Result bool `json:"result,omitempty"`
+}
+
+type LockAccountResponse struct {
+	Result *LockAccountResult `json:"result"`
+	Error  string             `json:"error"`
 }
 
 type SignHashRequest struct {
@@ -235,8 +306,13 @@ type SignHashRequest struct {
 	Alg uint32 `json:"alg,omitempty"`
 }
 
-type SignHashResponse struct {
+type SignHashResult struct {
 	Data []byte `json:"data,omitempty"`
+}
+
+type SignHashResponse struct {
+	Result *SignHashResult `json:"result"`
+	Error  string          `json:"error"`
 }
 
 type TransactionRequest struct {
@@ -271,11 +347,16 @@ type ContractRequest struct {
 	Args string `json:"args,omitempty"`
 }
 
-type SendTransactionResponse struct {
+type SendTransactionResult struct {
 	// Hex string of transaction hash.
 	Txhash string `json:"txhash,omitempty"`
 	// Hex string of contract address if transaction is deploy type
 	ContractAddress string `json:"contract_address,omitempty"`
+}
+
+type SendTransactionResponse struct {
+	Result *SendTransactionResult `json:"result"`
+	Error  string                 `json:"error"`
 }
 
 type SignTransactionPassphraseRequest struct {
@@ -285,8 +366,13 @@ type SignTransactionPassphraseRequest struct {
 	Passphrase string `json:"passphrase,omitempty"`
 }
 
-type SignTransactionPassphraseResponse struct {
+type SignTransactionPassphraseResult struct {
 	Data []byte `json:"data,omitempty"`
+}
+
+type SignTransactionPassphraseResponse struct {
+	Result *SignTransactionPassphraseResult `json:"result"`
+	Error  string                           `json:"error"`
 }
 
 type SendTransactionPassphraseRequest struct {
@@ -300,13 +386,23 @@ type PprofRequest struct {
 	Listen string `json:"listen,omitempty"`
 }
 
-type PprofResponse struct {
+type PprofResult struct {
 	Result bool `json:"result,omitempty"`
 }
 
-type GetConfigResponse struct {
+type PprofResponse struct {
+	Result *PprofResult `json:"result"`
+	Error  string       `json:"error"`
+}
+
+type GetConfigResult struct {
 	// Config
 	Config Config `json:"config,omitempty"`
+}
+
+type GetConfigResponse struct {
+	Result *GetConfigResult `json:"result"`
+	Error  string           `json:"error"`
 }
 
 type Config struct {
