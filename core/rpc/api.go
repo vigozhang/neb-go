@@ -3,6 +3,9 @@ package rpc
 import (
 	"encoding/json"
 	"log"
+	"bytes"
+	"bufio"
+	"net/http"
 
 	"github.com/vigozhang/neb-go/utils/httprequest"
 )
@@ -147,20 +150,13 @@ func (api *Api) GetTransactionByContract(req GetTransactionByContractRequest) (*
 	return &response, nil
 }
 
-func (api *Api) Subscribe(req SubscribeRequest) (*SubscribeResponse, error) {
-	resp, err := api.HttpRequest.Post("/user/subscribe", req)
+func (api *Api) Subscribe(req SubscribeRequest, callback func(response *SubscribeResponse)) (error) {
+	err := postStreamForSubscribe(api.HttpRequest, "/user/subscribe", req, callback)
 	if err != nil {
-		logError("Subscribe", string(resp), err)
-		return nil, err
+		log.Printf("Subscribe error:%s", err)
+		return err
 	}
-
-	var response SubscribeResponse
-	err = json.Unmarshal(resp, &response)
-	if err != nil {
-		logError("Subscribe", string(resp), err)
-		return nil, err
-	}
-	return &response, nil
+	return nil
 }
 
 func (api *Api) GasPrice() (*GasPriceResponse, error) {
@@ -229,4 +225,46 @@ func (api *Api) GetDynasty(req ByBlockHeightRequest) (*GetDynastyResponse, error
 
 func logError(method string, resp string, err error) {
 	log.Printf("%s error:%s, response is %s", method, err, resp)
+}
+
+func postStreamForSubscribe(req *httprequest.HttpRequest, api string, reqBody interface{}, callback func(response *SubscribeResponse)) (error) {
+	url := req.CreateUrl(api)
+	contentType := "application/json"
+
+	jsonReqBody, err := json.Marshal(reqBody)
+
+	if err != nil {
+		return err
+	}
+
+	response, err := http.Post(url, contentType, bytes.NewBuffer(jsonReqBody))
+	defer response.Body.Close()
+
+	if err != nil {
+		return err
+	}
+
+	reader := bufio.NewReader(response.Body)
+	for {
+		line, err := reader.ReadBytes('\n')
+
+		if err != nil {
+			break
+		}
+
+		var resp SubscribeResponse
+		err = json.Unmarshal(line, &resp)
+		if err != nil {
+			log.Printf("%s error:%s, response is %s", "Subscribe", err, resp)
+			break
+		}
+
+		callback(&resp)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

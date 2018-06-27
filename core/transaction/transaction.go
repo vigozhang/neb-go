@@ -26,15 +26,14 @@ const (
 	SECP256K1 = 1
 )
 
-
 type TransactionOptions struct {
 	ChainID  uint32
 	From     *account.Account
 	To       string
-	Value    int64
+	Value    *big.Int
 	Nonce    uint64
-	GasPrice int64
-	GasLimit int64
+	GasPrice *big.Int
+	GasLimit *big.Int
 	Contract *Contract
 }
 
@@ -87,11 +86,11 @@ func NewTransaction(opts TransactionOptions) *Transaction {
 	transaction.ChainID = opts.ChainID
 	transaction.From = opts.From
 	transaction.To, _ = account.FromAddress(opts.To)
-	transaction.Value = big.NewInt(opts.Value)
+	transaction.Value = opts.Value
 	transaction.Nonce = opts.Nonce
 	transaction.Timestamp = time.Now().Unix()
-	transaction.GasPrice = big.NewInt(opts.GasPrice)
-	transaction.GasLimit = big.NewInt(opts.GasLimit)
+	transaction.GasPrice = opts.GasPrice
+	transaction.GasLimit = opts.GasLimit
 	transaction.Data = parseContract(opts.Contract)
 
 	if transaction.GasPrice.Cmp(big.NewInt(0)) == -1 {

@@ -56,6 +56,16 @@ respNeb, err := api.GetNebState()
 
 // LatestIrreversibleBlock
 respBlock, err := api.LatestIrreversibleBlock()
+
+// Subscribe
+func subscribeCallback(line *rpc.SubscribeResponse) {
+	log.Println(line.Result.Topic)
+	log.Println(line.Result.Data)
+}
+req := rpc.SubscribeRequest{
+	Topics: []string{"chain.linkBlock", "chain.pendingTransaction"},
+}
+err := api.Subscribe(req, subscribeCallback)
 ```
 
 
@@ -140,6 +150,3 @@ if err != nil {
 	log.Println("TestApi_Call Resp:", string(utils.EncodeToJsonBytes(resp)))
 }
 ```
-
-
-

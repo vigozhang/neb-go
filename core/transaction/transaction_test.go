@@ -90,10 +90,10 @@ func newTransaction() *Transaction {
 		ChainID:  1,
 		From:     newAccount(),
 		To:       "n1SAeQRVn33bamxN4ehWUT7JGdxipwn8b17",
-		Value:    10,
+		Value:    big.NewInt(10),
 		Nonce:    12,
-		GasPrice: 1000000,
-		GasLimit: 2000000,
+		GasPrice: big.NewInt(1000000),
+		GasLimit: big.NewInt(2000000),
 		Contract: contract,
 	}
 

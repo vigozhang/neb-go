@@ -2,13 +2,16 @@ package rpc
 
 import (
 	"testing"
+	"log"
+	"math/big"
+
 	"github.com/vigozhang/neb-go/utils/httprequest"
 	"github.com/vigozhang/neb-go/utils"
 	"github.com/vigozhang/neb-go/core/transaction"
 	"github.com/vigozhang/neb-go/core/account"
 )
 
-var requesttest = httprequest.NewHttpRequest(httprequest.TestNet, httprequest.APIVersion1)
+var requesttest = httprequest.NewHttpRequest(httprequest.MainNet, httprequest.APIVersion1)
 var nebtest = NewNeb(requesttest)
 var api = nebtest.Api
 
@@ -82,10 +85,10 @@ func TestApi_SendRawTransaction(t *testing.T) {
 		ChainID:  1001,
 		From:     acc,
 		To:       "n1f5rgBtVKVEjxPBwrDcaV8H8QqxniFyhPk",
-		Value:    0,
+		Value:    big.NewInt(0),
 		Nonce:    6,
-		GasPrice: 1000000,
-		GasLimit: 2000000,
+		GasPrice: big.NewInt(1000000),
+		GasLimit: big.NewInt(2000000),
 		Contract: &contract,
 	}
 
@@ -133,17 +136,14 @@ func TestApi_GetBlockByHeight(t *testing.T) {
 }
 
 func TestApi_Subscribe(t *testing.T) {
-	// TODO:
-	//req := SubscribeRequest{
-	//	Topics: []string{"chain.pendingTransaction", "chain.sendTransaction", "chain.linkBlock"},
-	//}
-	//
-	//resp, err := api.Subscribe(req)
-	//if err != nil {
-	//	t.Error("TestApi_GetBlockByHeight failed")
-	//} else {
-	//	t.Log("TestApi_GetBlockByHeight Resp:", string(utils.EncodeToJsonBytes(resp)))
-	//}
+	req := SubscribeRequest{
+		Topics: []string{"chain.pendingTransaction", "chain.sendTransaction", "chain.linkBlock"},
+	}
+
+	err := api.Subscribe(req, subscribeCallback)
+	if err != nil {
+		t.Error("TestApi_Subscribe failed")
+	}
 }
 
 func TestApi_GasPrice(t *testing.T) {
@@ -213,4 +213,9 @@ func loadAccount() *account.Account {
 	keyjson := ""
 	loadAcc, _ := acc.FromKey(keyjson, "passphrase", true)
 	return loadAcc
+}
+
+func subscribeCallback(line *SubscribeResponse) {
+	log.Println(line.Result.Topic)
+	log.Println(line.Result.Data)
 }

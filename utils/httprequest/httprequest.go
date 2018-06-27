@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"encoding/json"
 	"bytes"
+	"bufio"
 )
 
 type HttpRequest struct {
@@ -79,4 +80,39 @@ func (req *HttpRequest) Post(api string, reqBody interface{}) ([]byte, error) {
 	}
 
 	return body, nil
+}
+
+func (req *HttpRequest) PostStream(api string, reqBody interface{}, callback func([]byte)) (error) {
+	url := req.CreateUrl(api)
+	contentType := "application/json"
+
+	jsonReqBody, err := json.Marshal(reqBody)
+
+	if err != nil {
+		return err
+	}
+
+	response, err := http.Post(url, contentType, bytes.NewBuffer(jsonReqBody))
+	defer response.Body.Close()
+
+	if err != nil {
+		return err
+	}
+
+	reader := bufio.NewReader(response.Body)
+	for {
+		line, err := reader.ReadBytes('\n')
+
+		if err != nil {
+			break
+		}
+
+		callback(line)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
