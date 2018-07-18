@@ -134,6 +134,22 @@ func (api *Api) GetBlockByHeight(req GetBlockByHeightRequest) (*BlockResponse, e
 	return &response, nil
 }
 
+func (api *Api) GetTransactionReceipt(req HashRequest) (*TransactionResponse, error) {
+	resp, err := api.HttpRequest.Post("/user/getTransactionReceipt", req)
+	if err != nil {
+		logError("GetTransactionReceipt", string(resp), err)
+		return nil, err
+	}
+
+	var response TransactionResponse
+	err = json.Unmarshal(resp, &response)
+	if err != nil {
+		logError("GetTransactionReceipt", string(resp), err)
+		return nil, err
+	}
+	return &response, nil
+}
+
 func (api *Api) GetTransactionByContract(req GetTransactionByContractRequest) (*TransactionResponse, error) {
 	resp, err := api.HttpRequest.Post("/user/getTransactionByContract", req)
 	if err != nil {

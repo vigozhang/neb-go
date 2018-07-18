@@ -11,7 +11,7 @@ import (
 	"github.com/vigozhang/neb-go/core/account"
 )
 
-var requesttest = httprequest.NewHttpRequest(httprequest.MainNet, httprequest.APIVersion1)
+var requesttest = httprequest.NewHttpRequest(httprequest.TestNet, httprequest.APIVersion1)
 var nebtest = NewNeb(requesttest)
 var api = nebtest.Api
 
@@ -205,6 +205,19 @@ func TestApi_GetDynasty(t *testing.T) {
 		t.Log("TestApi_GetDynasty Resp:", string(utils.EncodeToJsonBytes(resp)))
 	}
 
+}
+
+func TestApi_GetTransactionReceipt(t *testing.T) {
+	testNetTxHash := "0b4239206842b6ec2fd12a94f3370946f9246b2660d54c721202ba22c42ad146"
+	req := HashRequest{
+		Hash: testNetTxHash,
+	}
+	resp, err := api.GetTransactionReceipt(req)
+	if err != nil {
+		t.Error("TestApi_GetTransactionReceipt failed")
+	} else {
+		t.Log("TestApi_GetTransactionReceipt Resp:", string(utils.EncodeToJsonBytes(resp)))
+	}
 }
 
 func loadAccount() *account.Account {
